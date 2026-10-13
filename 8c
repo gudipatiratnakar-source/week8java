@@ -1,0 +1,66 @@
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage stage) {
+        Label title = new Label("Tip Calculator");
+
+        Label billLabel = new Label("Enter Bill Amount:");
+        TextField billField = new TextField();
+        billField.setPromptText("Enter amount");
+
+        Label tipLabel = new Label("Select Tip Percentage:");
+        ComboBox<Integer> tipBox = new ComboBox<>();
+        tipBox.getItems().addAll(5, 10, 15, 20, 25);
+        tipBox.setValue(15);
+
+        Button calculateButton = new Button("Calculate Tip");
+        Label resultLabel = new Label();
+
+        calculateButton.setOnAction(e -> {
+            try {
+                double bill = Double.parseDouble(billField.getText());
+
+                if (bill < 0) {
+                    resultLabel.setText("Enter a valid bill amount.");
+                    return;
+                }
+
+                int percentage = tipBox.getValue();
+                double tip = bill * percentage / 100.0;
+                double total = bill + tip;
+
+                resultLabel.setText(String.format(
+                    "Tip Amount: %.2f%nTotal Bill: %.2f",
+                    tip, total
+                ));
+
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Please enter a valid bill amount.");
+            }
+        });
+
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(20));
+        root.getChildren().addAll(
+            title, billLabel, billField,
+            tipLabel, tipBox, calculateButton, resultLabel
+        );
+
+        Scene scene = new Scene(root, 350, 350);
+        stage.setTitle("Tip Calculator");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
